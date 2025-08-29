@@ -5,5 +5,19 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
+    <style name="MyDialogTheme" parent="Theme.AppCompat.DayNight.Dialog.Alert">
+        <!-- Цвет фона всего диалогового окна -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+
+
+
+        <!-- Цвет текста кнопок "OK", "Отмена" -->
+        <item name="colorAccent">@color/white_t</item> <!-- Используем ваш зеленый цвет -->
+
+        <!-- Цвет текста в полях ввода (для старых версий API) -->
+        <item name="android:textColor">@color/white_t</item>
+    </style>
+
+
     <style name="Theme.MyGrade" parent="Base.Theme.MyGrade" />
 </resources>

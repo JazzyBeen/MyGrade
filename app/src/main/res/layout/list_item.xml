@@ -3,55 +3,61 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginBottom="16dp"
+    android:layout_height="wrap_content">
 
-    android:layout_height="match_parent">
-    <Button
-        android:id="@+id/button"
-        android:layout_width="match_parent"
+    <!-- Этот View теперь будет нашим главным элементом для нажатий -->
+    <View
+        android:id="@+id/background_clickable_area"
+        android:layout_width="0dp"
         android:layout_height="88dp"
         android:background="@drawable/glowing_button_background"
-        app:backgroundTint="@null"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <TextView
         android:id="@+id/progressTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/inter_bold"
-        android:text="45"
         android:textColor="@color/white_t"
-        android:textSize="23sp"
+        android:textSize="17sp"
         app:layout_constraintBottom_toBottomOf="@+id/circularProgressBar"
         app:layout_constraintEnd_toEndOf="@+id/circularProgressBar"
         app:layout_constraintStart_toStartOf="@+id/circularProgressBar"
-        app:layout_constraintTop_toTopOf="@+id/circularProgressBar" />
+        app:layout_constraintTop_toTopOf="@+id/circularProgressBar"
+        tools:text="75" />
+
     <TextView
         android:id="@+id/name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="16dp"
         android:fontFamily="@font/ibm_plex_sans_medium"
-        android:gravity="center"
-        android:text="Программирование на C++"
+        android:gravity="start|center_vertical"
         android:textColor="@color/white_t"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/button"
+        app:layout_constraintBottom_toBottomOf="@+id/background_clickable_area"
         app:layout_constraintEnd_toStartOf="@+id/circularProgressBar"
-        app:layout_constraintStart_toStartOf="@+id/button"
-        app:layout_constraintTop_toTopOf="@+id/button" />
+        app:layout_constraintStart_toStartOf="@+id/background_clickable_area"
+        app:layout_constraintTop_toTopOf="@+id/background_clickable_area"
+        tools:text="Программирование на C++" />
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/circularProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:indeterminate="false"
+        android:layout_marginEnd="16dp"
         android:progress="75"
         app:indicatorColor="@color/gren"
-        app:indicatorSize="65dp"
-        app:layout_constraintBottom_toBottomOf="@+id/button"
-        app:layout_constraintEnd_toEndOf="@+id/button"
-        app:layout_constraintHorizontal_bias="0.98"
-        app:layout_constraintStart_toStartOf="@+id/button"
-        app:layout_constraintTop_toTopOf="@+id/button"
+        app:indicatorSize="70dp"
+        app:layout_constraintBottom_toBottomOf="@+id/background_clickable_area"
+        app:layout_constraintEnd_toEndOf="@+id/background_clickable_area"
+        app:layout_constraintTop_toTopOf="@+id/background_clickable_area"
         app:trackColor="@color/white_trans"
         app:trackCornerRadius="6dp"
         app:trackThickness="8dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
