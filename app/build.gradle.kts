@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    id("com.google.dagger.hilt.android") version "2.48" apply false
 
 }
 
@@ -37,6 +38,11 @@ android {
 
 dependencies {
 
+    implementation("com.google.dagger:hilt-android:2.48")
+    annotationProcessor("com.google.dagger:hilt-compiler:2.48")
+
+    implementation("androidx.compose.runtime:runtime-livedata:1.10.1")
+
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -57,7 +63,6 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation("androidx.room:room-runtime:2.6.1")
     implementation(libs.room.runtime.android)
-    implementation(libs.volley)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

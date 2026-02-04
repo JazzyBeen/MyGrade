@@ -6,7 +6,7 @@
     android:layout_marginBottom="16dp"
     android:layout_height="wrap_content">
 
-    <!-- Этот View теперь будет нашим главным элементом для нажатий -->
+
     <View
         android:id="@+id/background_clickable_area"
         android:layout_width="0dp"

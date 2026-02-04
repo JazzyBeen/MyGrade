@@ -1,7 +1,6 @@
 package com.android.mygrade;
 
 import android.content.Context;
-import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;

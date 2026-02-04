@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    tools:context=".SubjectsListFragment"> <!-- Изменено с .MainActivity для корректной работы -->
+    tools:context=".SubjectsListFragment">
 
     <ImageButton
         android:id="@+id/button_plus"
@@ -62,7 +62,7 @@
             android:clipToPadding="false"
             android:padding="8dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/list_item" /> <!-- Убедитесь, что имя вашего элемента subject_item.xml -->
+            tools:listitem="@layout/list_item" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

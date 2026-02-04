@@ -1,4 +1,4 @@
-package com.android.mygrade; // Убедитесь, что это имя вашего пакета
+package com.android.mygrade;
 
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -116,10 +116,8 @@ public class MainActivity extends AppCompatActivity implements SubjectAdapter.On
     }
 
     private void showAddOrEditSubjectDialog(final Subject subjectToEdit) {
-        // Используем вашу кастомную тему, если она есть
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyDialogTheme);
         LayoutInflater inflater = this.getLayoutInflater();
-        // Убедитесь, что здесь правильное имя вашего макета для диалога
         View dialogView = inflater.inflate(R.layout.dialog_add_item, null);
         builder.setView(dialogView);
 
@@ -174,30 +172,20 @@ public class MainActivity extends AppCompatActivity implements SubjectAdapter.On
         });
         builder.setNegativeButton("Отмена", (dialog, id) -> dialog.cancel());
 
-        // Создаем экземпляр диалога
+
         AlertDialog dialog = builder.create();
         dialog.show();
-        // --- ДОБАВЛЕНА ЛОГИКА ДЛЯ ПРОЗРАЧНОСТИ И РАЗМЫТИЯ ---
         Window window = dialog.getWindow();
         if (window != null) {
-            // Делаем фон самого окна полностью прозрачным.
-            // Это позволит видеть наш кастомный фон из XML и размытие за ним.
+
             window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
-            // Включаем затемнение фона за диалогом (стандартный эффект)
             window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-            window.getAttributes().dimAmount = 0.4f; // Настраиваем силу затемнения
-
-            // Проверяем версию Android, чтобы безопасно применить размытие
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) { // Android 12 (API 31) и выше
-                // Устанавливаем радиус размытия фона за окном
+            window.getAttributes().dimAmount = 0.4f;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 window.setBackgroundBlurRadius(90);
             }
-            // На версиях Android ниже 12 фон будет просто полупрозрачным и затемненным.
         }
-        // --------------------------------------------------------
-
-        // Показываем полностью настроенный диалог
 
     }
 
