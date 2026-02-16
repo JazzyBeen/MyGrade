@@ -87,12 +87,12 @@ public class Subject {
         this.maxValue = maxValue;
     }
 
-    public int getProgressPercent() {
+    public int getProgressPercent()  {
         try {
             double progress = Double.parseDouble(this.currentValue.replaceAll(",", ".")) / this.maxValue * 100;
             return (int) Math.round(progress);
         }
-        catch (NumberFormatException e){
+        catch (IllegalArgumentException e){
             return 0;
         }
 
