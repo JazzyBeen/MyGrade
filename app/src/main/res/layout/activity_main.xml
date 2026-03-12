@@ -3,71 +3,67 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:background="@color/black"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:background="@color/black"
+    tools:context=".presentation.MainActivity"> <!-- ИСПРАВИЛИ ЗДЕСЬ -->
 
     <ImageButton
         android:id="@+id/button_plus"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="0dp"
+        android:layout_marginTop="45dp"
+        android:layout_marginEnd="16dp"
         android:background="@drawable/glowing_button_background_for_plus"
-        app:backgroundTint="@null"
+        android:contentDescription="Добавить предмет"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.97"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/outline_add_2_24"/>
+        app:srcCompat="@drawable/outline_add_2_24" />
 
     <ImageButton
         android:id="@+id/button_history"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="16dp"
-
-        android:background="@drawable/glowing_button_background_bot"
-        app:backgroundTint="@null"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="45dp"
+        android:background="@color/black"
+        android:contentDescription="История"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/baseline_history_24" />
-
-
+     />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Зачётка"
         android:fontFamily="@font/ibm_plex_sans_medium"
-        android:textColor="@color/white_t"
+        android:text="Зачётка"
+        android:textColor="@color/white"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/button_plus"
         app:layout_constraintEnd_toStartOf="@+id/button_plus"
         app:layout_constraintStart_toEndOf="@+id/button_history"
         app:layout_constraintTop_toTopOf="@+id/button_plus" />
 
-    <ScrollView
-
-        android:layout_width="409dp"
-        android:layout_height="663dp"
-        android:layout_marginTop="32dp"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_history">
 
-        <LinearLayout
-            android:id="@+id/container"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
-    </ScrollView>
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:padding="8dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/list_item" />
 
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

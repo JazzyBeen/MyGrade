@@ -5,5 +5,16 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
+    <style name="MyDialogTheme" parent="Theme.AppCompat.DayNight.Dialog.Alert">
+        <item name="android:windowBackground">@android:color/transparent</item>
+
+
+
+        <item name="colorAccent">@color/white_t</item>
+
+        <item name="android:textColor">@color/white_t</item>
+    </style>
+
+
     <style name="Theme.MyGrade" parent="Base.Theme.MyGrade" />
 </resources>
