@@ -3,12 +3,16 @@
 
 **MyGrade** — это Android-приложение для студентов, позволяющее отслеживать успеваемость в реальном времени. Приложение синхронизирует оценки напрямую из **Google Таблиц** (Google Sheets), отображает прогресс выполнения и сохраняет данные локально для офлайн-доступа.
 
->  **Проект находится в стадии активного рефакторинга:** Переход с монолитной архитектуры на **Clean Architecture + MVVM**.
+>  **Проект прошел рефакторинг:** Переход с монолитной архитектуры на **Clean Architecture + MVVM**.
 
 ---
 
 ##  Скриншоты
-<img width="576" height="1280" alt="image" src="https://github.com/user-attachments/assets/3c4dfcf4-531e-47f5-ac27-98ec87d70c60" /> <img width="576" height="1280" alt="image" src="https://github.com/user-attachments/assets/f93d7e71-e1c4-46f7-a167-6ba4250b2dbb" /> <img width="576" height="1280" alt="image" src="https://github.com/user-attachments/assets/85db147e-0e89-458e-9c27-04e827d71957" />
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/3c4dfcf4-531e-47f5-ac27-98ec87d70c60" width="200" />
+  <img src="https://github.com/user-attachments/assets/f93d7e71-e1c4-46f7-a167-6ba4250b2dbb" width="200" />
+  <img src="https://github.com/user-attachments/assets/85db147e-0e89-458e-9c27-04e827d71957" width="200" />
+</p>
 
 
 
