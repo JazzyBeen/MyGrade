@@ -26,7 +26,7 @@ public class SubjectRepositoryImpl implements SubjectRepository {
     private final SubjectDao subjectDao;
     private final GoogleSheetsApi api;
     private final ExecutorService executor;
-    private static final String API_KEY = "AIzaSyDBSknTVisowI6Tf7rirm7c96wKc_yB7HE";
+    private static final String API_KEY = "YOUR_API";
 
     @Inject
     public SubjectRepositoryImpl(SubjectDao subjectDao, GoogleSheetsApi api) {
