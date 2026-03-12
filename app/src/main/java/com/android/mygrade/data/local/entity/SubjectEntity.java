@@ -1,6 +1,7 @@
 package com.android.mygrade.data.local.entity;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.android.mygrade.domain.model.Subject;
@@ -19,6 +20,7 @@ public class SubjectEntity {
 
     public SubjectEntity() {
     }
+    @Ignore
     public SubjectEntity(int id, String name, String sheetUrl, String column, int row, String sheetName, String currentValue, int maxValue) {
         this.id = id;
         this.name = name;

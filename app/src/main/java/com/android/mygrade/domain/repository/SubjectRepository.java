@@ -10,9 +10,9 @@ public interface SubjectRepository {
     void insertSubject(Subject subject);
     void deleteSubject(Subject subject);
     void updateSubject(Subject subject);
-    void syncGrades(syncCallback callback);
+    void syncGrades(SyncCallback callback);
 
-    interface syncCallback {
+    interface SyncCallback {
         void onSuccess();
         void onError(String error);
     }

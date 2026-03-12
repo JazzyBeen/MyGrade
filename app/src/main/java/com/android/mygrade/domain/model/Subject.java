@@ -21,7 +21,17 @@ public class Subject {
     }
 
     public Subject(int id, String name, String sheetUrl, String column, int row, String sheetName, String currentValue, int maxValue) {
+        this.id = id;
+        this.name = name;
+        this.sheetUrl = sheetUrl;
+        this.column = column;
+        this.row = row;
+        this.sheetName = sheetName;
+        this.currentValue = currentValue;
+        this.maxValue = maxValue;
     }
+
+
 
     public int getId() {
         return id;
@@ -48,6 +58,9 @@ public class Subject {
     }
 
     public String getCurrentValue() {
+        if (currentValue == null) {
+            return "...";
+        }
         return currentValue;
     }
 
@@ -87,14 +100,21 @@ public class Subject {
         this.maxValue = maxValue;
     }
 
-    public int getProgressPercent()  {
-        try {
-            double progress = Double.parseDouble(this.currentValue.replaceAll(",", ".")) / this.maxValue * 100;
-            return (int) Math.round(progress);
-        }
-        catch (IllegalArgumentException e){
+    public int getProgressPercent() {
+        if (currentValue == null || currentValue.equals("...")) {
             return 0;
         }
 
+        if (maxValue <= 0) {
+            return 0;
+        }
+
+        try {
+            double current = Double.parseDouble(currentValue.replaceAll(",", "."));
+            double progress = (current / maxValue) * 100;
+            return (int) Math.round(progress);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 }

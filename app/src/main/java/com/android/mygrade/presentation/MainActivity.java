@@ -1,9 +1,10 @@
-package com.android.mygrade;
+package com.android.mygrade.presentation;
 
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -15,36 +16,29 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.ExistingWorkPolicy;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkInfo;
-import androidx.work.WorkManager;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import com.android.mygrade.R;
+import com.android.mygrade.presentation.subjects.SubjectAdapter;
+import com.android.mygrade.domain.model.Subject;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class MainActivity extends AppCompatActivity implements SubjectAdapter.OnSubjectInteractionListener {
 
-    private AppDatabase appDatabase;
-    private ExecutorService executorService;
+    private MainViewModel viewModel;
     private SubjectAdapter adapter;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private WorkManager workManager;
-    private static final String MANUAL_UPDATE_WORK_NAME = "ManualSheetUpdate";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        executorService = Executors.newSingleThreadExecutor();
-        appDatabase = AppDatabase.getDatabase(this);
-        workManager = WorkManager.getInstance(getApplicationContext());
+        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
 
         setupRecyclerView();
         setupSwipeToRefresh();
@@ -52,18 +46,21 @@ public class MainActivity extends AppCompatActivity implements SubjectAdapter.On
         ImageButton buttonPlus = findViewById(R.id.button_plus);
         buttonPlus.setOnClickListener(v -> showAddOrEditSubjectDialog(null));
 
-        appDatabase.subjectDao().getAllSubjects().observe(this, subjects -> {
+        viewModel.getSubjects().observe(this, subjects -> {
             adapter.submitList(subjects);
         });
 
-        schedulePeriodicWork();
-        observeWorkInfo();
-    }
+        viewModel.getIsLoading().observe(this, isLoading -> {
+            swipeRefreshLayout.setRefreshing(isLoading);
+        });
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        triggerImmediateUpdate();
+        viewModel.getErrorMessage().observe(this, error -> {
+            if (error != null) {
+                Toast.makeText(this, error, Toast.LENGTH_LONG).show();
+            }
+        });
+
+        viewModel.refreshData();
     }
 
     private void setupRecyclerView() {
@@ -74,29 +71,13 @@ public class MainActivity extends AppCompatActivity implements SubjectAdapter.On
 
     private void setupSwipeToRefresh() {
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
-        swipeRefreshLayout.setOnRefreshListener(this::triggerImmediateUpdate);
-    }
-
-    private void observeWorkInfo() {
-        workManager.getWorkInfosForUniqueWorkLiveData(MANUAL_UPDATE_WORK_NAME).observe(this, workInfos -> {
-            if (workInfos == null || workInfos.isEmpty()) {
-                return;
-            }
-            WorkInfo workInfo = workInfos.get(0);
-            if (workInfo.getState() == WorkInfo.State.RUNNING || workInfo.getState() == WorkInfo.State.ENQUEUED) {
-                swipeRefreshLayout.setRefreshing(true);
-            } else {
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });
+        swipeRefreshLayout.setOnRefreshListener(() -> viewModel.refreshData());
     }
 
     @Override
     public void onSubjectLongClicked(View view, Subject subject) {
         showPopupMenu(view, subject);
     }
-
-
 
     private void showPopupMenu(View view, final Subject subject) {
         PopupMenu popupMenu = new PopupMenu(this, view);
@@ -130,24 +111,26 @@ public class MainActivity extends AppCompatActivity implements SubjectAdapter.On
 
         if (subjectToEdit != null) {
             builder.setTitle("Редактировать предмет");
-            editName.setText(subjectToEdit.name);
-            editUrl.setText(subjectToEdit.sheetUrl);
-            editSheetName.setText(subjectToEdit.sheetName);
-            editColumn.setText(subjectToEdit.column);
-            editRow.setText(String.valueOf(subjectToEdit.row));
-            editMaxValue.setText(String.valueOf(subjectToEdit.maxValue));
+            editName.setText(subjectToEdit.getName());
+            editUrl.setText(subjectToEdit.getSheetUrl());
+            editSheetName.setText(subjectToEdit.getSheetName());
+            editColumn.setText(subjectToEdit.getColumn());
+            editRow.setText(String.valueOf(subjectToEdit.getRow()));
+            editMaxValue.setText(String.valueOf(subjectToEdit.getMaxValue()));
         } else {
             builder.setTitle("Добавить предмет");
         }
 
         builder.setPositiveButton("OK", (dialog, id) -> {
+
             String name = editName.getText().toString().trim();
+
             String url = editUrl.getText().toString().trim();
             String sheetName = editSheetName.getText().toString().trim();
             String column = editColumn.getText().toString().trim().toUpperCase();
             String rowStr = editRow.getText().toString().trim();
             String maxValueStr = editMaxValue.getText().toString().trim();
-
+            android.util.Log.d("MyGrade_DEBUG", "Creating Subject with name: " + name + " and url: " + url);
             if (TextUtils.isEmpty(name) || TextUtils.isEmpty(url) || TextUtils.isEmpty(sheetName) ||
                     TextUtils.isEmpty(column) || TextUtils.isEmpty(rowStr) || TextUtils.isEmpty(maxValueStr)) {
                 Toast.makeText(this, "Все поля должны быть заполнены", Toast.LENGTH_SHORT).show();
@@ -158,75 +141,41 @@ public class MainActivity extends AppCompatActivity implements SubjectAdapter.On
             int maxValue = Integer.parseInt(maxValueStr);
 
             if (subjectToEdit != null) {
-                subjectToEdit.name = name;
-                subjectToEdit.sheetUrl = url;
-                subjectToEdit.sheetName = sheetName;
-                subjectToEdit.column = column;
-                subjectToEdit.row = row;
-                subjectToEdit.maxValue = maxValue;
-                updateSubject(subjectToEdit);
+                subjectToEdit.setName(name);
+                subjectToEdit.setSheetUrl(url);
+                subjectToEdit.setSheetName(sheetName);
+                subjectToEdit.setColumn(column);
+                subjectToEdit.setRow(row);
+                subjectToEdit.setMaxValue(maxValue);
+
+                viewModel.updateSubject(subjectToEdit);
             } else {
                 Subject newSubject = new Subject(name, url, column, row, sheetName, maxValue);
-                insertSubject(newSubject);
+                Log.d("MyGrade_DEBUG", "Saving subject: " + name + ", URL: " + url);
+                viewModel.addSubject(newSubject);
             }
         });
         builder.setNegativeButton("Отмена", (dialog, id) -> dialog.cancel());
-
 
         AlertDialog dialog = builder.create();
         dialog.show();
         Window window = dialog.getWindow();
         if (window != null) {
-
             window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-
             window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
             window.getAttributes().dimAmount = 0.4f;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 window.setBackgroundBlurRadius(90);
             }
         }
-
     }
 
     private void showDeleteConfirmationDialog(final Subject subject) {
         new AlertDialog.Builder(this)
                 .setTitle("Удалить предмет")
-                .setMessage("Вы уверены, что хотите удалить '" + subject.name + "'?")
-                .setPositiveButton("Удалить", (dialog, which) -> deleteSubject(subject))
+                .setMessage("Вы уверены, что хотите удалить '" + subject.getName() + "'?")
+                .setPositiveButton("Удалить", (dialog, which) -> viewModel.deleteSubject(subject))
                 .setNegativeButton("Отмена", null)
                 .show();
-    }
-
-    private void insertSubject(Subject subject) {
-        executorService.execute(() -> {
-            appDatabase.subjectDao().insert(subject);
-            // Запускаем обновление UI в главном потоке
-            runOnUiThread(this::triggerImmediateUpdate);
-        });
-    }
-
-    private void updateSubject(Subject subject) {
-        executorService.execute(() -> {
-            appDatabase.subjectDao().update(subject);
-            // Запускаем обновление UI в главном потоке
-            runOnUiThread(this::triggerImmediateUpdate);
-        });
-    }
-
-    private void deleteSubject(Subject subject) {
-        executorService.execute(() -> appDatabase.subjectDao().delete(subject));
-    }
-
-    private void triggerImmediateUpdate() {
-        OneTimeWorkRequest updateRequest = new OneTimeWorkRequest.Builder(SheetUpdateWorker.class).build();
-        workManager.enqueueUniqueWork(MANUAL_UPDATE_WORK_NAME, ExistingWorkPolicy.REPLACE, updateRequest);
-    }
-
-    private void schedulePeriodicWork() {
-        PeriodicWorkRequest periodicWorkRequest =
-                new PeriodicWorkRequest.Builder(SheetUpdateWorker.class, 15, TimeUnit.MINUTES).build();
-        workManager.enqueueUniquePeriodicWork(
-                "SheetUpdateWork", ExistingPeriodicWorkPolicy.KEEP, periodicWorkRequest);
     }
 }

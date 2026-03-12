@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
-    id("com.google.dagger.hilt.android") version "2.48" apply false
+    id("dagger.hilt.android.plugin")
 
 }
 
@@ -8,8 +8,9 @@ android {
     namespace = "com.android.mygrade"
     compileSdk = 36
     packagingOptions {
-        exclude("META-INF/INDEX.LIST")
-        exclude("META-INF/DEPENDENCIES")
+        resources {
+            excludes += setOf("META-INF/INDEX.LIST", "META-INF/DEPENDENCIES")
+        }
     }
     defaultConfig {
         applicationId = "com.android.mygrade"
@@ -38,8 +39,8 @@ android {
 
 dependencies {
 
-    implementation("com.google.dagger:hilt-android:2.48")
-    annotationProcessor("com.google.dagger:hilt-compiler:2.48")
+    implementation("com.google.dagger:hilt-android:2.51")
+    annotationProcessor("com.google.dagger:hilt-compiler:2.51")
 
     implementation("androidx.compose.runtime:runtime-livedata:1.10.1")
 

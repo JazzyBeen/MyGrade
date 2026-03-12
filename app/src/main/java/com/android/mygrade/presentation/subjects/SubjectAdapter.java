@@ -1,13 +1,17 @@
-package com.android.mygrade;
+package com.android.mygrade.presentation.subjects;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.android.mygrade.R;
+import com.android.mygrade.domain.model.Subject;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 
 public class SubjectAdapter extends ListAdapter<Subject, SubjectAdapter.SubjectViewHolder> {
@@ -22,14 +26,14 @@ public class SubjectAdapter extends ListAdapter<Subject, SubjectAdapter.SubjectV
     private static final DiffUtil.ItemCallback<Subject> DIFF_CALLBACK = new DiffUtil.ItemCallback<Subject>() {
         @Override
         public boolean areItemsTheSame(@NonNull Subject oldItem, @NonNull Subject newItem) {
-            return oldItem.id == newItem.id;
+            return oldItem.getId() == newItem.getId();
         }
 
         @Override
         public boolean areContentsTheSame(@NonNull Subject oldItem, @NonNull Subject newItem) {
-            return oldItem.name.equals(newItem.name) &&
-                    oldItem.currentValue.equals(newItem.currentValue) &&
-                    oldItem.maxValue == newItem.maxValue;
+            return java.util.Objects.equals(oldItem.getName(), newItem.getName()) &&
+                    java.util.Objects.equals(oldItem.getCurrentValue(), newItem.getCurrentValue()) &&
+                    oldItem.getMaxValue() == newItem.getMaxValue();
         }
     };
 
@@ -46,7 +50,7 @@ public class SubjectAdapter extends ListAdapter<Subject, SubjectAdapter.SubjectV
         holder.bind(subject, listener);
     }
 
-    class SubjectViewHolder extends RecyclerView.ViewHolder {
+    static class SubjectViewHolder extends RecyclerView.ViewHolder {
         private final TextView nameTextView;
         private final TextView progressTextView;
         private final CircularProgressIndicator progressBar;
@@ -61,16 +65,10 @@ public class SubjectAdapter extends ListAdapter<Subject, SubjectAdapter.SubjectV
         }
 
         public void bind(final Subject subject, final OnSubjectInteractionListener listener) {
-            nameTextView.setText(subject.name);
-            progressTextView.setText(subject.currentValue);
+            nameTextView.setText(subject.getName());
+            progressTextView.setText(subject.getCurrentValue());
 
-            int progress = 0;
-            try {
-                double currentValueDouble = Double.parseDouble(subject.currentValue);
-                if (subject.maxValue > 0) {
-                    progress = (int) ((currentValueDouble * 100) / subject.maxValue);
-                }
-            } catch (NumberFormatException ignored) {}
+            int progress = subject.getProgressPercent();
             progressBar.setProgress(progress);
 
             clickableArea.setOnLongClickListener(v -> {
